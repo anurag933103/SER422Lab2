@@ -113,6 +113,7 @@ public class GroceryListViewerServlet extends HttpServlet {
 
 		// default message to be displayed
 		String message = "No filters applied on grocery list.";
+		log.info("request parameter test for id :" + request.getParameter("id"));
 
 		List<String> filterMessages = new ArrayList<String>();
 		Map<String, GroceryItem> groceryList = groceryListObj.getGroceryList();
@@ -124,6 +125,7 @@ public class GroceryListViewerServlet extends HttpServlet {
 		try {
 			while(parameters.hasMoreElements()){
 				String itemName = (String)parameters.nextElement();
+				log.info("item name for filter is :" + itemName);
 				String itemValue = request.getParameter(itemName);
 				if(!itemValue.equals("")) {
 					Pair <String, Map<String, GroceryItem> > pairObj = filterGroceryList(groceryList, itemName, itemValue);

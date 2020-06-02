@@ -4,6 +4,8 @@ package edu.asupoly.ser422.grocery;
 import java.net.MalformedURLException;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import javafx.util.Pair;
 import java.io.*;
 import java.util.*;
@@ -104,6 +106,35 @@ public class ServletHelper{
 	public static String getUniqueId() {
 		String uniqueID = UUID.randomUUID().toString();
 		return uniqueID;
+		
+	}
+	
+	public static int idExists(String id, JSONArray products) {
+		for (int i=0;i< products.length();i++) {
+			
+			JSONObject obj = (JSONObject)products.get(i);
+				if (obj.has("id")) {
+					String storedId = obj.getString("id");
+					if (storedId.equals(id)) {
+						return  i;
+					}
+				
+				}
+
+		}
+		return -1;
+	}
+	
+	public static String getId(HttpServletRequest req) {
+		String reqId = (String)req.getPathInfo();
+		if (reqId.equals("/") ){
+			return null;
+		}
+		else {
+			String idarr[] = reqId.split("/");
+			String id = idarr[idarr.length-1];
+			return id;
+		}
 		
 	}
 }
