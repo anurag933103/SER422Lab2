@@ -169,7 +169,7 @@ public class GroceryListViewerServlet extends HttpServlet {
 		This method handles the 'POST' HTTP requests to the '/groceries' URL.
 
 		@param request. First parameter, represents the HTTP request to get the resource.
-		@param response. Seond parameter, represents the server's response.
+		@param response. Second parameter, represents the server's response.
 		@return void.
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) 

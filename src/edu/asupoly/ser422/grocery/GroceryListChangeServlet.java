@@ -112,14 +112,13 @@ public class GroceryListChangeServlet extends HttpServlet {
 			response.setStatus(responseCode);
 			renderer.renderResponse(responsePayload, response.getWriter());
 			return;
-		}
-//		
-//		// Step 4. Assemble response payload
-//		// Step 5. Set response headers (if not done so already)
-//		// At this point the groceryItem has to be valid so we can safely move forward and
-//		// set up the grocery list from the persistent store and then add to it. Put these
-//		// together in code as we need to synchronize the read then write to prevent lost updates
-//		// XXX synch block needed
+		}		
+		// Step 4. Assemble response payload
+		
+		// At this point the groceryItem has to be valid so we can safely move forward and
+		// set up the grocery list from the persistent store and then add to it. Put these
+		// together in code as we need to synchronize the read then write to prevent lost updates
+		// XXX synch block needed
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream(_filename);
 		Pair<Pair<Boolean, String>, GroceryList> loadBundle = ServletHelper.loadBootstrapFile(is);
 		Pair<Boolean, String> loadStatus = loadBundle.getKey();
@@ -137,17 +136,27 @@ public class GroceryListChangeServlet extends HttpServlet {
 			renderer.renderResponse(responsePayload, response.getWriter());
 			return;
 		}
-		String id = ServletHelper.processID(request);
+		
+		
+		String id = ServletHelper.retrieveID(request);
 		Map<String,GroceryItem> groceryList=groceryListObj.getGroceryList();
 		if(groceryList.containsKey(id)) {
 			groceryItem.setId(id);
 			groceryList.put(id, groceryItem);
 			groceryListObj.addToGroceryList(id, groceryItem, _outFileName);
-			out.println("reached");
+			responsePayload.add("Successfully updated: " + groceryItem.getId() + " to the list");
 		}
 		else {
-			out.println("not reached");
+			responseCode = HttpServletResponse.SC_BAD_REQUEST;
+			responsePayload.add("Id mentioned: " + groceryItem.getId() + "is incorrect");
 		}
+		
+		// Step 5. Set response headers (if not done so already)
+		response.setStatus(responseCode);
+		// content type set at top so any rendering done for errors has the right header
+		
+		// Step 6. Write out results. At this point we should know our our content type, our response code, and our payload.
+		renderer.renderResponse(responsePayload, response.getWriter());
 	}
 	
 	/**
@@ -204,7 +213,6 @@ public class GroceryListChangeServlet extends HttpServlet {
 		// Step 3. Perform processing (business logic). This could be refactored elsewhere
 	
 		// Step 4. Assemble response payload
-		// Step 5. Set response headers (if not done so already)
 		// At this point the groceryItem has to be valid so we can safely move forward and
 		// set up the grocery list from the persistent store and then add to it. Put these
 		// together in code as we need to synchronize the read then write to prevent lost updates
@@ -226,18 +234,25 @@ public class GroceryListChangeServlet extends HttpServlet {
 			renderer.renderResponse(responsePayload, response.getWriter());
 			return;
 		}
-		String id = ServletHelper.processID(request);
+		
+		String id = ServletHelper.retrieveID(request);
 		Map<String,GroceryItem> groceryList=groceryListObj.getGroceryList();
 		if(groceryList.containsKey(id)) {
-//			groceryItem.setID(id);
 			groceryList.remove(id);
-//			groceryListObj.addToGroceryList(id, groceryItem, _outFileName, response);
 			groceryListObj.saveToFile(groceryList, _outFileName);
-			out.println("reached");
+			responsePayload.add("Successfully deleted product id: " + id + " from the list");
 		}
 		else {
-			out.println("not reached");
+			responseCode = HttpServletResponse.SC_BAD_REQUEST;
+			responsePayload.add("Id mentioned: " + id + "is incorrect");
 		}
+
+		// Step 5. Set response headers (if not done so already)
+		response.setStatus(responseCode);
+		// content type set at top so any rendering done for errors has the right header
+		
+		// Step 6. Write out results. At this point we should know our our content type, our response code, and our payload.
+		renderer.renderResponse(responsePayload, response.getWriter());
 	}
 
 	/**

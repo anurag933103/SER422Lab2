@@ -121,25 +121,31 @@ public class GroceryListAdderServlet extends HttpServlet {
 		}
 
 		// default message to be displayed
-		String message = "No filters applied on grocery list.";
+		String message = "No filters applied on grocery list. Works directly on Id";
 		
 		JSONArray groceryList = groceryListObj.toJSONArray(groceryListObj.groceryList);
-//		out.print(groceryList);
-		JSONArray  products = new JSONArray();
+		JSONArray  grocSet = new JSONArray();
 		for (int i = 0;i< groceryList.length();i++) {
 			JSONObject jsonobject = (JSONObject) groceryList.get(i);
 			JSONObject content = (JSONObject) jsonobject.get("JSONObject");
-			products.put(content);
+			grocSet.put(content);
 		}
-		String id = ServletHelper.processID(request);
-//		out.print(products);
-		int exist = ServletHelper.idExists(id, products);
+		String id = ServletHelper.retrieveID(request);
+		int exist = ServletHelper.idExists(id, grocSet);
 		if (exist > -1) {
-			out.print(products.get(exist));
+			out.print(grocSet.get(exist));
+			responseJSON.put(Constants.JR_GROCERY_LIST, (JSONObject)grocSet.get(exist));
+			responseJSON.put(Constants.JR_ERROR, hasErrored);
+			responseJSON.put(Constants.JR_ERROR_MSG, "No error messages");
 		}
 		else {
-			out.print("not found");//use renderer.responseJson
+			responseCode = HttpServletResponse.SC_BAD_REQUEST;
+			response.setStatus(responseCode);
+			hasErrored = Boolean.TRUE;
+			responseJSON.put(Constants.JR_ERROR, hasErrored);
+			responseJSON.put(Constants.JR_ERROR_MSG, "id value is incorrect!");
 		}
+		
 
 		response.setStatus(responseCode);
 		// content type set at top so any rendering done for errors has the right header
@@ -196,6 +202,8 @@ public class GroceryListAdderServlet extends HttpServlet {
 		// Step 2. Process request parameters and request payload
 		// Step 3. Perform processing (business logic). This could be refactored elsewhere
         String requestData = request.getReader().lines().collect(Collectors.joining());
+        
+		log.info("request data is " + requestData);
 		
 		JSONArray jsonArray = new JSONArray(requestData);
 		JSONArray groceryItemList = new JSONArray();
@@ -242,7 +250,7 @@ public class GroceryListAdderServlet extends HttpServlet {
 			groceryItem.setId(id);
 			groceryListObj.addToGroceryList(id, groceryItem, _outFileName);
 			responseCode = HttpServletResponse.SC_CREATED;
-			responsePayload.add("Successfully added: " + groceryItem.getId() + "!");
+			responsePayload.add("Successfully added: " + groceryItem.getId() + " to the list");
 		}
 		
 		

@@ -109,13 +109,13 @@ public class ServletHelper{
 		
 	}
 	
-	public static int idExists(String id, JSONArray products) {
-		for (int i=0;i< products.length();i++) {
+	public static int idExists(String id, JSONArray grocItems) {
+		for (int i=0;i< grocItems.length();i++) {
 			
-			JSONObject obj = (JSONObject)products.get(i);
-				if (obj.has("id")) {
-					String storedId = obj.getString("id");
-					if (storedId.equals(id)) {
+			JSONObject groc = (JSONObject)grocItems.get(i);
+				if (groc.has("id")) {
+					String idValue = groc.getString("id");
+					if (idValue.equals(id)) {
 						return  i;
 					}
 				
@@ -125,15 +125,15 @@ public class ServletHelper{
 		return -1;
 	}
 	
-	public static String processID(HttpServletRequest req) {		
+	public static String retrieveID(HttpServletRequest req) {		
 		String reqId = (String)req.getPathInfo();
-		log.info("processId value received is : " + reqId);
+		log.info("retrieveID value received is : " + reqId);
 		if (reqId.equals("/") ){
 			return null;
 		}
 		else {
-			String idarr[] = reqId.split("/");
-			String id = idarr[idarr.length-1];
+			String urlarr[] = reqId.split("/");
+			String id = urlarr[urlarr.length-1];
 			return id;
 		}
 		
