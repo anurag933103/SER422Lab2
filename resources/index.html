@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Lab1 Solution</title>
+<title>Page Title</title>
 </head>
-	<body>
-		<h1> Lab 1 Task Solution</h1>
-		<form action="groceries" method="post">
-			<table border=1 cols=2>
-				<tr>
-					<th>Field Name</th>
-					<th>Field Value</th>
-				</tr>
-				<tr>
-					<td>Product Name</td>
-					<td>
-						<input type="text" name="name">
-					</td>
-				</tr>
-				<tr>
-					<td>Product Brand</td>
-					<td><input type="text" name="brand"></td>
-				</tr>
-				<tr>
-					<td>Quantity</td>
-					<td><input type="text" name="quantity"></td>
-				</tr>
-				<tr>
-					<td>Aisle</td>
-					<td><input type="text" name="aisle"></td>
-				</tr>
-				<tr>
-					<td>Diet</td>
-					<td><input type="text" name="custom"></td>
-				</tr>
-			</table>
-			<input type="submit" value="Add">
-		</form>
-	</body>
+<body>
+
+<h1>Task 1 Documentation</h1>
+<h3>Part1</h3>
+<p>This uses a POST Call.The code had been mapped via web.xml to GroceryListAdderServlet. The DoPost method caters to this functionality.<br/> 
+The resource identifier for this call will be : localhost:8080/task1_amishr57/groceries <br/>
+During the Post call a unique id is generated which is visible in response. This is used by the other calls when referring to a unique order.<br/>
+Duplicate orders are now allowed because everyone of them is given a unique id, hence searching for a particular order gives accurate results, even if there are multiple same orders.<br/>
+The response payload includes the newly generated id, the total number of grocery items, and the status in the header.<br/></p>
+
+<h3>Part2</h3>
+<p>This uses a PUT Call.The code had been mapped via web.xml to GroceryListChangeServlet. The DoPut method caters to this functionality.<br/> 
+The resource identifier for this call will be : localhost:8080/task1_amishr57/change_groceries/[id] <br/>
+id mentioned in square brackets is the unique identifier which is generated as a STRING and added as value to the key 'id' in the json.</p>
+
+<h3>Part3</h3>
+<p>This uses a DELETE Call.The code had been mapped via web.xml to GroceryListChangeServlet. The DoDelete method caters to this functionality.<br/> 
+The resource identifier for this call will be : localhost:8080/task1_amishr57/change_groceries/[id] <br/>
+id mentioned in square brackets is the unique identifier which is generated as a STRING and added as value to the key 'id' in the json.</p>
+
+<h3>Part4</h3>
+<p>This uses a GET Call.The code had been mapped via web.xml to GroceryListAdderServlet. The DoGet method caters to this functionality.<br/> 
+The resource identifier for this call will be : localhost:8080/task1_amishr57/my_groceries<br/></p>
+
+<h3>Part5</h3>
+<p>This uses a GET Call.The code had been mapped via web.xml to GroceryListAdderServlet. The DoGet method caters to this functionality.<br/> 
+The resource identifier for this call will be : localhost:8080/task1_amishr57/groceries/[id]<br/>
+id mentioned in square brackets is the unique identifier which is generated as a STRING and added as value to the key 'id' in the json.</p>
+
+</body>
 </html>
