@@ -9,7 +9,7 @@ import org.json.JSONTokener;
 import org.json.JSONException;
 
 public class GroceryList {
-	private Map<String, GroceryItem> groceryList = new Hashtable<String, GroceryItem>();
+	public Map<String, GroceryItem> groceryList = new Hashtable<String, GroceryItem>();
 	private static Logger log = Logger.getLogger(GroceryList.class.getName());
 
 	public String toString() {
@@ -96,7 +96,7 @@ public class GroceryList {
 		@return JSONArray. The input mapping as a JSONArray object.
 	 */
 	@SuppressWarnings("unused")
-	private JSONArray toJSONArray(Map<String, GroceryItem> groceryList) {
+	public JSONArray toJSONArray(Map<String, GroceryItem> groceryList) {
 		JSONArray jArray = new JSONArray();
 		for(Map.Entry<String, GroceryItem> entry : groceryList.entrySet()){
 			JSONObject jObject = new JSONObject(entry.getValue());

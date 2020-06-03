@@ -125,8 +125,9 @@ public class ServletHelper{
 		return -1;
 	}
 	
-	public static String getId(HttpServletRequest req) {
+	public static String processID(HttpServletRequest req) {		
 		String reqId = (String)req.getPathInfo();
+		log.info("processId value received is : " + reqId);
 		if (reqId.equals("/") ){
 			return null;
 		}

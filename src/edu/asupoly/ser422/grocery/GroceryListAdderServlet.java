@@ -56,8 +56,96 @@ public class GroceryListAdderServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException	{
-		log.info("In doGet of adder not allowed");
-		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "GET not supported by this servlet");
+		PrintWriter out = response.getWriter();
+
+		int responseCode = HttpServletResponse.SC_OK;  // by default assuming success
+		String responseContentType = ServletHelper.getResponseContentType(request.getHeader("Accept"));
+		MyLab1Renderer renderer = null;
+		Boolean hasErrored = Boolean.FALSE; // assume no errors ;)
+		JSONObject responseJSON = new JSONObject(); // by default we will build JSON here
+		// Note if we get an error case we blow this object away and use a new one to encapsulate the error
+
+		// This needs to be there always
+		responseJSON.put(Constants.JR_HOME, _refererURL);
+		
+		// Step 1. Process request headers. In this case Task 3 asks for an Accept header
+		if (responseContentType == null) {
+			log.info("Viewer: No content type!");
+			// didn't find a type we could use as a return type in the Accept header, return a 406
+			responseCode = HttpServletResponse.SC_NOT_ACCEPTABLE;
+			responseJSON = new JSONObject();
+			responseJSON.put(Constants.JR_ERROR, Boolean.TRUE);
+			responseJSON.put(Constants.JR_ERROR_MSG,
+							 "This application understands " + Constants.CONTENT_HTML + ", " + Constants.CONTENT_TEXT + ", or " + Constants.CONTENT_JSON);
+			// Set the response content type to HTML and pass back as such
+			responseContentType = Constants.CONTENT_HTML;
+			try {
+				renderer = MyLab1RendererFactory.getRenderer(responseContentType, _refererURL);
+			} catch (Throwable t) {
+				// we have a big problem. We don't know how to render. Barf
+				throw new ServletException(t.getMessage());
+			}
+			response.setStatus(responseCode);
+			renderer.renderResponse(responseJSON, response.getWriter());
+			return;
+		}
+		log.info("Viewer: Content type is " + responseContentType);
+
+		// Setting this up now. Once we know a response type we can use a renderer for it, even for errors.
+		response.setContentType(responseContentType);
+		try {
+			renderer = MyLab1RendererFactory.getRenderer(responseContentType, _refererURL);	
+		} catch (Throwable t) {
+			// we have a big problem. We don't know how to render.
+			throw new ServletException(t.getMessage());
+		}
+		
+		// load the grocery list from the JSON file
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream(_filename);
+		Pair<Pair<Boolean, String>, GroceryList> loadBundle = ServletHelper.loadBootstrapFile(is);
+		Pair<Boolean, String> loadStatus = loadBundle.getKey();
+		GroceryList groceryListObj = loadBundle.getValue();
+		is.close();
+		// if no error occured during the load
+		hasErrored = loadStatus.getKey();
+
+		if (hasErrored) {
+			log.info("Viewer: Error trying to read in the json input file");
+			responseCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+			responseJSON = new JSONObject();
+			responseJSON.put(Constants.JR_ERROR, hasErrored);
+			responseJSON.put(Constants.JR_ERROR_MSG, loadStatus.getValue());
+			response.setStatus(responseCode);
+			renderer.renderResponse(responseJSON, response.getWriter());
+			return;
+		}
+
+		// default message to be displayed
+		String message = "No filters applied on grocery list.";
+		
+		JSONArray groceryList = groceryListObj.toJSONArray(groceryListObj.groceryList);
+//		out.print(groceryList);
+		JSONArray  products = new JSONArray();
+		for (int i = 0;i< groceryList.length();i++) {
+			JSONObject jsonobject = (JSONObject) groceryList.get(i);
+			JSONObject content = (JSONObject) jsonobject.get("JSONObject");
+			products.put(content);
+		}
+		String id = ServletHelper.processID(request);
+//		out.print(products);
+		int exist = ServletHelper.idExists(id, products);
+		if (exist > -1) {
+			out.print(products.get(exist));
+		}
+		else {
+			out.print("not found");//use renderer.responseJson
+		}
+
+		response.setStatus(responseCode);
+		// content type set at top so any rendering done for errors has the right header
+		
+		// Step 6. Write out results. At this point we should know our our content type, our response code, and our payload.
+		renderer.renderResponse(responseJSON, response.getWriter());
 	}
 
 	/**
@@ -166,4 +254,42 @@ public class GroceryListAdderServlet extends HttpServlet {
 		response.setStatus(responseCode);
 		renderer.renderResponse(responsePayload, response.getWriter());
 	}
+
+	/**
+	This method handles the 'PUT' HTTP requests to the '/groceries' URL.
+
+	@param request. First parameter, represents the HTTP request to get the resource.
+	@param response. Second parameter, represents the server's response.
+	@return void.
+ */
+	public void doPut(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
+	}
+	
+	
+	/**
+	This method handles the 'DELETE' HTTP requests to the '/groceries' URL.
+
+	@param request. First parameter, represents the HTTP request to get the resource.
+	@param response. Second parameter, represents the server's response.
+	@return void.
+ */
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
+	}
+
+	/**
+	This method handles the 'Patch' HTTP requests to the '/groceries' URL.
+
+	@param request. First parameter, represents the HTTP request to get the resource.
+	@param response. Second parameter, represents the server's response.
+	@return void.
+ */
+	public void doPatch(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
+	}	
+	
 }

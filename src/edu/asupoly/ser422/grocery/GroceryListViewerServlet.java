@@ -176,7 +176,46 @@ public class GroceryListViewerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
 	}
+	
+	
+	/**
+	This method handles the 'PUT' HTTP requests to the '/groceries' URL.
 
+	@param request. First parameter, represents the HTTP request to get the resource.
+	@param response. Second parameter, represents the server's response.
+	@return void.
+ */
+	public void doPut(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
+	}
+	
+	
+	/**
+	This method handles the 'DELETE' HTTP requests to the '/groceries' URL.
+
+	@param request. First parameter, represents the HTTP request to get the resource.
+	@param response. Second parameter, represents the server's response.
+	@return void.
+ */
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
+	}
+
+	/**
+	This method handles the 'Patch' HTTP requests to the '/groceries' URL.
+
+	@param request. First parameter, represents the HTTP request to get the resource.
+	@param response. Second parameter, represents the server's response.
+	@return void.
+ */
+	public void doPatch(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "POST not supported by this servlet");
+	}	
+	
+	
 	/**
 		Filter the grocery list based on the filters provided.
 		@param groceryList. First parameter. A map comtaining grocery items mapped to their names.
@@ -184,7 +223,7 @@ public class GroceryListViewerServlet extends HttpServlet {
 		@param filterValue. Third parameter. String value of the filter.
 		@return Pair<String, Map<String, GroceryItem> > A 'Pair' containg status message for the operation and the 
 		filtered grocery-list.
-	 */
+	 */	
 	public Pair<String, Map<String, GroceryItem> > filterGroceryList(Map<String, GroceryItem> groceryList, String filterName, String filterValue)
 			throws BadParameterException {
 

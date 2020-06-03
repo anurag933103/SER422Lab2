@@ -38,7 +38,7 @@
 
   <servlet-mapping>
     <servlet-name>GroceryListAdderServlet</servlet-name>
-    <url-pattern>/groceries</url-pattern>
+    <url-pattern>/groceries/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -48,7 +48,7 @@
   
   <servlet-mapping>
     <servlet-name>GroceryListChangeServlet</servlet-name>
-    <url-pattern>/change_groceries</url-pattern>
+    <url-pattern>/change_groceries/*</url-pattern>
   </servlet-mapping>
 
  <welcome-file-list>
